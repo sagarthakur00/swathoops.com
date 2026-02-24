@@ -18,11 +18,13 @@ const nextConfig: NextConfig = {
   // Strict mode for catching bugs early
   reactStrictMode: true,
 
+  // Force-bundle all server packages (prevent Turbopack from externalizing Prisma)
+  serverExternalPackages: [],
+
   // Exclude unnecessary files from serverless function file tracing
   outputFileTracingExcludes: {
     "/*": [
       "./public/**",
-      "./prisma/**",
       "./scripts/**",
       "./.git/**",
       "./docker-compose.yml",
