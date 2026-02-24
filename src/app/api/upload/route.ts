@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminFromCookie } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
 import { randomUUID } from "crypto";
 import { UPLOAD_CONFIG } from "@/config";
+import { put } from "@vercel/blob";
+
+// Use Vercel Blob in production, local filesystem in development
+const isVercel = !!process.env.BLOB_READ_WRITE_TOKEN;
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,9 +23,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    const uploadDir = path.join(process.cwd(), UPLOAD_CONFIG.uploadDir);
-    await mkdir(uploadDir, { recursive: true });
 
     const urls: string[] = [];
 
@@ -46,13 +45,26 @@ export async function POST(request: NextRequest) {
 
       const ext = file.name.split(".").pop() || "jpg";
       const filename = `${randomUUID()}.${ext}`;
-      const filepath = path.join(uploadDir, filename);
 
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      await writeFile(filepath, buffer);
-
-      urls.push(`${UPLOAD_CONFIG.publicPath}/${filename}`);
+      if (isVercel) {
+        // Production: Upload to Vercel Blob
+        const blob = await put(`uploads/${filename}`, file, {
+          access: "public",
+          addRandomSuffix: false,
+        });
+        urls.push(blob.url);
+      } else {
+        // Local development: Write to filesystem
+        const { writeFile, mkdir } = await import("fs/promises");
+        const path = await import("path");
+        const uploadDir = path.join(process.cwd(), UPLOAD_CONFIG.uploadDir);
+        await mkdir(uploadDir, { recursive: true });
+        const filepath = path.join(uploadDir, filename);
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        await writeFile(filepath, buffer);
+        urls.push(`${UPLOAD_CONFIG.publicPath}/${filename}`);
+      }
     }
 
     return NextResponse.json({ urls }, { status: 201 });

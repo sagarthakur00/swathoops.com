@@ -30,7 +30,7 @@ const values = [
 ];
 
 export default function AboutPage() {
-  const [heroImage, setHeroImage] = useState<string>("/images/lifestyle/lifestyle_1.jpg");
+  const [heroImage, setHeroImage] = useState<string>("https://qtaxonslq0sfxcs2.public.blob.vercel-storage.com/images/lifestyle/1brown_lofer_design.JPG");
 
   useEffect(() => {
     fetch("/api/products")

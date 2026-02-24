@@ -191,18 +191,21 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
 
-    // Fetch addresses for each order
-    const ordersWithAddress = await Promise.all(
-      orders.map(async (order) => {
-        let address = null;
-        if (order.addressId) {
-          address = await prisma.address.findUnique({
-            where: { id: order.addressId },
-          });
-        }
-        return { ...order, address };
-      })
-    );
+    // Batch-fetch all addresses in a single query instead of N+1
+    const addressIds = orders
+      .map((o) => o.addressId)
+      .filter((id): id is string => !!id);
+
+    const addresses = addressIds.length
+      ? await prisma.address.findMany({ where: { id: { in: addressIds } } })
+      : [];
+
+    const addressMap = new Map(addresses.map((a) => [a.id, a]));
+
+    const ordersWithAddress = orders.map((order) => ({
+      ...order,
+      address: order.addressId ? addressMap.get(order.addressId) ?? null : null,
+    }));
 
     return NextResponse.json(ordersWithAddress);
   } catch (error) {

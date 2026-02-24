@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
+const CDN = "https://qtaxonslq0sfxcs2.public.blob.vercel-storage.com";
+
 const productsData = [
   {
     name: "Moccosin Saddle Black",
@@ -24,11 +26,11 @@ const productsData = [
     stock: 100,
     isOutOfStock: false,
     images: [
-      "/images/creative/1black_cloth.JPG",
-      "/images/creative/2black_cloth.JPG",
-      "/images/creative/3black_cloth.JPG",
-      "/images/lifestyle/1black_cloth.JPG",
-      "/images/lifestyle/23black_cloth.JPG",
+      `${CDN}/images/creative/1black_cloth.JPG`,
+      `${CDN}/images/creative/2black_cloth.JPG`,
+      `${CDN}/images/creative/3black_cloth.JPG`,
+      `${CDN}/images/lifestyle/1black_cloth.JPG`,
+      `${CDN}/images/lifestyle/23black_cloth.JPG`,
     ],
   },
   {
@@ -50,11 +52,11 @@ const productsData = [
     stock: 100,
     isOutOfStock: false,
     images: [
-      "/images/creative/1black_lofer_design.JPG",
-      "/images/creative/2black_lofer_design.JPG",
-      "/images/creative/3black_lofer_design.JPG",
-      "/images/lifestyle/1black_lofer_design.JPG",
-      "/images/lifestyle/2black_lofer_design.JPG",
+      `${CDN}/images/creative/1black_lofer_design.JPG`,
+      `${CDN}/images/creative/2black_lofer_design.JPG`,
+      `${CDN}/images/creative/3black_lofer_design.JPG`,
+      `${CDN}/images/lifestyle/1black_lofer_design.JPG`,
+      `${CDN}/images/lifestyle/2black_lofer_design.JPG`,
     ],
   },
   {
@@ -76,11 +78,11 @@ const productsData = [
     stock: 100,
     isOutOfStock: false,
     images: [
-      "/images/creative/1black_with_lase.JPG",
-      "/images/creative/2black_with_lase.JPG",
-      "/images/creative/3black_with_lase.JPG",
-      "/images/lifestyle/1black_with_lase.JPG",
-      "/images/lifestyle/2black_with_lase.JPG",
+      `${CDN}/images/creative/1black_with_lase.JPG`,
+      `${CDN}/images/creative/2black_with_lase.JPG`,
+      `${CDN}/images/creative/3black_with_lase.JPG`,
+      `${CDN}/images/lifestyle/1black_with_lase.JPG`,
+      `${CDN}/images/lifestyle/2black_with_lase.JPG`,
     ],
   },
   {
@@ -102,11 +104,11 @@ const productsData = [
     stock: 100,
     isOutOfStock: false,
     images: [
-      "/images/creative/1black_with_lastic.JPG",
-      "/images/creative/2black_with_lastic.JPG",
-      "/images/creative/3black_with_lastic.JPG",
-      "/images/lifestyle/1black_with_lastic.JPG",
-      "/images/lifestyle/2black_with_lastic.JPG",
+      `${CDN}/images/creative/1black_with_lastic.JPG`,
+      `${CDN}/images/creative/2black_with_lastic.JPG`,
+      `${CDN}/images/creative/3black_with_lastic.JPG`,
+      `${CDN}/images/lifestyle/1black_with_lastic.JPG`,
+      `${CDN}/images/lifestyle/2black_with_lastic.JPG`,
     ],
   },
   {
@@ -128,11 +130,11 @@ const productsData = [
     stock: 100,
     isOutOfStock: false,
     images: [
-      "/images/creative/1black_without_lase.JPG",
-      "/images/creative/2black_without_lase.JPG",
-      "/images/creative/3black_without_lase.JPG",
-      "/images/lifestyle/1black_without_lase.JPG",
-      "/images/lifestyle/2black_without_lase.JPG",
+      `${CDN}/images/creative/1black_without_lase.JPG`,
+      `${CDN}/images/creative/2black_without_lase.JPG`,
+      `${CDN}/images/creative/3black_without_lase.JPG`,
+      `${CDN}/images/lifestyle/1black_without_lase.JPG`,
+      `${CDN}/images/lifestyle/2black_without_lase.JPG`,
     ],
   },
   {
@@ -154,11 +156,11 @@ const productsData = [
     stock: 100,
     isOutOfStock: false,
     images: [
-      "/images/creative/1brown_cloth.JPG",
-      "/images/creative/2brown_cloth.JPG",
-      "/images/creative/3brown_cloth.JPG",
-      "/images/lifestyle/1brown_cloth.JPG",
-      "/images/lifestyle/2brown_cloth.JPG",
+      `${CDN}/images/creative/1brown_cloth.JPG`,
+      `${CDN}/images/creative/2brown_cloth.JPG`,
+      `${CDN}/images/creative/3brown_cloth.JPG`,
+      `${CDN}/images/lifestyle/1brown_cloth.JPG`,
+      `${CDN}/images/lifestyle/2brown_cloth.JPG`,
     ],
   },
   {
@@ -180,11 +182,11 @@ const productsData = [
     stock: 100,
     isOutOfStock: false,
     images: [
-      "/images/creative/1brown_lofer_design.JPG",
-      "/images/creative/2brown_lofer_design.JPG",
-      "/images/creative/3brown_lofer_design.JPG",
-      "/images/lifestyle/1brown_lofer_design.JPG",
-      "/images/lifestyle/2brown_lofer_design.JPG",
+      `${CDN}/images/creative/1brown_lofer_design.JPG`,
+      `${CDN}/images/creative/2brown_lofer_design.JPG`,
+      `${CDN}/images/creative/3brown_lofer_design.JPG`,
+      `${CDN}/images/lifestyle/1brown_lofer_design.JPG`,
+      `${CDN}/images/lifestyle/2brown_lofer_design.JPG`,
     ],
   },
   {
@@ -206,11 +208,11 @@ const productsData = [
     stock: 100,
     isOutOfStock: false,
     images: [
-      "/images/creative/1brown_lofer_simple.JPG",
-      "/images/creative/2brown_lofer_simple.JPG",
-      "/images/creative/3brown_lofer_simple.JPG",
-      "/images/lifestyle/1brown_lofer_simple.JPG",
-      "/images/lifestyle/2brown_lofer_simple.JPG",
+      `${CDN}/images/creative/1brown_lofer_simple.JPG`,
+      `${CDN}/images/creative/2brown_lofer_simple.JPG`,
+      `${CDN}/images/creative/3brown_lofer_simple.JPG`,
+      `${CDN}/images/lifestyle/1brown_lofer_simple.JPG`,
+      `${CDN}/images/lifestyle/2brown_lofer_simple.JPG`,
     ],
   },
   {
@@ -232,11 +234,11 @@ const productsData = [
     stock: 100,
     isOutOfStock: false,
     images: [
-      "/images/creative/1brown_with_lase.JPG",
-      "/images/creative/2brown_with_lase.JPG",
-      "/images/creative/3brown_with_lase.JPG",
-      "/images/lifestyle/1brown_with_lase.JPG",
-      "/images/lifestyle/2brown_with_lase.JPG",
+      `${CDN}/images/creative/1brown_with_lase.JPG`,
+      `${CDN}/images/creative/2brown_with_lase.JPG`,
+      `${CDN}/images/creative/3brown_with_lase.JPG`,
+      `${CDN}/images/lifestyle/1brown_with_lase.JPG`,
+      `${CDN}/images/lifestyle/2brown_with_lase.JPG`,
     ],
   },
   {
@@ -258,11 +260,11 @@ const productsData = [
     stock: 100,
     isOutOfStock: false,
     images: [
-      "/images/creative/1brown_with_lastic.JPG",
-      "/images/creative/2brown_with_lastic.JPG",
-      "/images/creative/3brown_with_lastic.JPG",
-      "/images/lifestyle/1brown_with_lastic.JPG",
-      "/images/lifestyle/2brown_with_lastic.JPG",
+      `${CDN}/images/creative/1brown_with_lastic.JPG`,
+      `${CDN}/images/creative/2brown_with_lastic.JPG`,
+      `${CDN}/images/creative/3brown_with_lastic.JPG`,
+      `${CDN}/images/lifestyle/1brown_with_lastic.JPG`,
+      `${CDN}/images/lifestyle/2brown_with_lastic.JPG`,
     ],
   },
 ];

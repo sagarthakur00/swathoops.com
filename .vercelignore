@@ -1,0 +1,8 @@
+# Docker files (not needed for Vercel deployment)
+Dockerfile
+docker-compose.yml
+docker-compose.override.yml
+
+# Development files
+.DS_Store
+thepicsstudio_amit-footwear_2026-02-13_0721

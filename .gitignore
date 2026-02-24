@@ -48,6 +48,13 @@ docker-compose.override.yml
 /public/uploads/*
 !/public/uploads/.gitkeep
 
+# Product images (stored on Vercel Blob CDN)
+/public/images/creative/
+/public/images/lifestyle/
+
+# Vercel env
+.env.vercel
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
