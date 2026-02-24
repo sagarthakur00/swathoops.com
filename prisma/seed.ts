@@ -289,15 +289,25 @@ async function main() {
   console.log(`Admin user created: ${adminEmail}`);
   console.log("⚠️  Change the admin password after first login!");
 
-  // Create products
+  // Create or update products (update images to CDN URLs)
   for (const product of productsData) {
     await prisma.product.upsert({
       where: { sku: product.sku },
-      update: {},
+      update: {
+        images: product.images,
+        name: product.name,
+        price: product.price,
+        discountPrice: product.discountPrice,
+        description: product.description,
+        longDescription: product.longDescription,
+        material: product.material,
+        sole: product.sole,
+        quality: product.quality,
+      },
       create: product,
     });
   }
-  console.log(`${productsData.length} products seeded.`);
+  console.log(`${productsData.length} products seeded/updated.`);
 
   console.log("Seeding complete!");
 }
