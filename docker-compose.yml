@@ -1,0 +1,60 @@
+# =============================================================================
+# SWATHOOPS - Docker Compose (Development + Production)
+# =============================================================================
+
+services:
+  # --- PostgreSQL Database ---
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: swathoops
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-swathoops_dev}
+      POSTGRES_DB: swathoops
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U swathoops"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # --- Next.js Application ---
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://swathoops:${DB_PASSWORD:-swathoops_dev}@db:5432/swathoops?schema=public
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set}
+      JWT_EXPIRY: ${JWT_EXPIRY:-7d}
+      BCRYPT_SALT_ROUNDS: ${BCRYPT_SALT_ROUNDS:-12}
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:?RAZORPAY_KEY_ID must be set}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:?RAZORPAY_KEY_SECRET must be set}
+      NEXT_PUBLIC_RAZORPAY_KEY_ID: ${NEXT_PUBLIC_RAZORPAY_KEY_ID:?NEXT_PUBLIC_RAZORPAY_KEY_ID must be set}
+      NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-SWATHOOPS}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      NEXT_PUBLIC_APP_DESCRIPTION: ${NEXT_PUBLIC_APP_DESCRIPTION:-Premium Men's Footwear}
+      NEXT_PUBLIC_CONTACT_EMAIL: ${NEXT_PUBLIC_CONTACT_EMAIL:-support@swathoops.com}
+      NEXT_PUBLIC_CONTACT_PHONE: ${NEXT_PUBLIC_CONTACT_PHONE:-+91 8287524434}
+      NEXT_PUBLIC_CONTACT_ADDRESS: ${NEXT_PUBLIC_CONTACT_ADDRESS:-Mumbai, Maharashtra, India}
+      NEXT_PUBLIC_CURRENCY: ${NEXT_PUBLIC_CURRENCY:-INR}
+      NEXT_PUBLIC_CURRENCY_SYMBOL: ${NEXT_PUBLIC_CURRENCY_SYMBOL:-₹}
+      NEXT_PUBLIC_DEFAULT_COUNTRY: ${NEXT_PUBLIC_DEFAULT_COUNTRY:-India}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@swathoops.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      NODE_ENV: production
+    volumes:
+      - uploads_data:/app/public/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  uploads_data:

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FOOTER_LINKS, APP_CONFIG } from "@/config/client";
 
 export default function Footer() {
   return (
@@ -23,12 +24,7 @@ export default function Footer() {
               Quick Links
             </h3>
             <ul className="space-y-3">
-              {[
-                { href: "/shop", label: "Shop All" },
-                { href: "/shop?category=Loafers", label: "Loafers" },
-                { href: "/shop?category=Casual", label: "Casual" },
-                { href: "/shop?category=Formal", label: "Formal" },
-              ].map((link) => (
+              {FOOTER_LINKS.quickLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -47,12 +43,7 @@ export default function Footer() {
               Company
             </h3>
             <ul className="space-y-3">
-              {[
-                { href: "/about", label: "About Us" },
-                { href: "/contact", label: "Contact" },
-                { href: "#", label: "Shipping Policy" },
-                { href: "#", label: "Returns" },
-              ].map((link) => (
+              {FOOTER_LINKS.company.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
@@ -88,10 +79,10 @@ export default function Footer() {
 
         <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-neutral-600">
-            © 2026 SWATHOOPS. All rights reserved.
+            &copy; {new Date().getFullYear()} {APP_CONFIG.name}. All rights reserved.
           </p>
           <div className="flex gap-6">
-            {["Instagram", "Twitter", "Facebook"].map((social) => (
+            {FOOTER_LINKS.social.map((social) => (
               <a
                 key={social}
                 href="#"

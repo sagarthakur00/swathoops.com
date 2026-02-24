@@ -1,17 +1,18 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback } from "react";
-import { Product } from "@/data/products";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
+import { ProductType } from "@/types/product";
+import { CART_STORAGE_KEY } from "@/config/client";
 
 export interface CartItem {
-  product: Product;
+  product: ProductType;
   size: number;
   quantity: number;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: Product, size: number) => void;
+  addToCart: (product: ProductType, size: number) => void;
   removeFromCart: (productId: string, size: number) => void;
   updateQuantity: (productId: string, size: number, quantity: number) => void;
   clearCart: () => void;
@@ -23,11 +24,40 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+function loadCartFromStorage(): CartItem[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const stored = localStorage.getItem(CART_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCartToStorage(items: CartItem[]) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+}
+
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
-  const addToCart = useCallback((product: Product, size: number) => {
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    setItems(loadCartFromStorage());
+    setHydrated(true);
+  }, []);
+
+  // Save cart to localStorage on change
+  useEffect(() => {
+    if (hydrated) {
+      saveCartToStorage(items);
+    }
+  }, [items, hydrated]);
+
+  const addToCart = useCallback((product: ProductType, size: number) => {
     setItems((prev) => {
       const existing = prev.find(
         (item) => item.product.id === product.id && item.size === size

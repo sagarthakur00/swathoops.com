@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id        String    @id @default(cuid())
+  name      String
+  email     String    @unique
+  phone     String
+  addresses Address[]
+  orders    Order[]
+  createdAt DateTime  @default(now())
+}
+
+model Address {
+  id           String  @id @default(cuid())
+  userId       String
+  user         User    @relation(fields: [userId], references: [id])
+  fullName     String
+  phone        String
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  pincode      String
+  country      String  @default("India")
+}
+
+model Product {
+  id              String           @id @default(cuid())
+  name            String
+  slug            String           @unique
+  sku             String           @unique
+  price           Float
+  discountPrice   Float?
+  description     String
+  longDescription String?
+  material        String
+  sole            String?
+  quality         String?
+  color           String?
+  colorCode       String?
+  category        String?
+  sizes           Int[]            @default([6, 7, 8, 9, 10, 11])
+  stock           Int              @default(100)
+  isOutOfStock    Boolean          @default(false)
+  isActive        Boolean          @default(true)
+  isFeatured      Boolean          @default(false)
+  isOnSale        Boolean          @default(false)
+  images          String[]
+  variants        ProductVariant[]
+  orderItems      OrderItem[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt @default(now())
+}
+
+model ProductVariant {
+  id           String  @id @default(cuid())
+  productId    String
+  product      Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size         Int
+  stock        Int     @default(0)
+  isOutOfStock Boolean @default(false)
+
+  @@unique([productId, size])
+}
+
+model Order {
+  id                String      @id @default(cuid())
+  userId            String
+  user              User        @relation(fields: [userId], references: [id])
+  addressId         String?
+  totalAmount       Float
+  status            String      @default("pending")
+  trackingNumber    String?
+  courierName       String?
+  adminNote         String?
+  paymentStatus     String      @default("pending")
+  paymentMethod     String      @default("cod")
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  items             OrderItem[]
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt @default(now())
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  size      Int?
+  price     Float
+}
+
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}

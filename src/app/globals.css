@@ -31,3 +31,23 @@ body {
   background-color: rgba(245, 158, 11, 0.3);
   color: white;
 }
+
+/* Toast slide-in animation */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+/* Confirm dialog backdrop */
+.confirm-backdrop {
+  backdrop-filter: blur(4px);
+}

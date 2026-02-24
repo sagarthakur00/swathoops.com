@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { CONTACT_CONFIG } from "@/config/client";
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -70,7 +71,7 @@ export default function ContactPage() {
                     </svg>
                   ),
                   label: "Email",
-                  value: "hello@swathoops.com",
+                  value: CONTACT_CONFIG.email,
                 },
                 {
                   icon: (
@@ -79,7 +80,7 @@ export default function ContactPage() {
                     </svg>
                   ),
                   label: "Phone",
-                  value: "+91 98765 43210",
+                  value: CONTACT_CONFIG.phone,
                 },
                 {
                   icon: (
@@ -89,7 +90,7 @@ export default function ContactPage() {
                     </svg>
                   ),
                   label: "Address",
-                  value: "Mumbai, Maharashtra, India",
+                  value: CONTACT_CONFIG.address,
                 },
               ].map((item) => (
                 <div key={item.label} className="flex items-start gap-4">

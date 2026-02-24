@@ -9,10 +9,13 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const appName = process.env.NEXT_PUBLIC_APP_NAME || "SWATHOOPS";
+const appDescription =
+  process.env.NEXT_PUBLIC_APP_DESCRIPTION || "Premium Men's Footwear";
+
 export const metadata: Metadata = {
-  title: "SWATHOOPS | Premium Men's Footwear",
-  description:
-    "Handcrafted premium men's footwear. Discover our collection of loafers, formal shoes, and casual footwear crafted with the finest materials.",
+  title: `${appName} | ${appDescription}`,
+  description: `Handcrafted premium men's footwear. Discover our collection of loafers, formal shoes, and casual footwear crafted with the finest materials.`,
   keywords: [
     "men's shoes",
     "premium footwear",
@@ -23,7 +26,7 @@ export const metadata: Metadata = {
     "handcrafted shoes",
   ],
   openGraph: {
-    title: "SWATHOOPS | Premium Men's Footwear",
+    title: `${appName} | ${appDescription}`,
     description:
       "Handcrafted premium men's footwear for the modern gentleman.",
     type: "website",

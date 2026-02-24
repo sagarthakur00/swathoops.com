@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { getProductBySlug, formatPrice, products } from "@/data/products";
+import { ProductType, formatPrice } from "@/types/product";
 import { useCart } from "@/context/CartContext";
 import ProductGallery from "@/components/ProductGallery";
 import ProductCard from "@/components/ProductCard";
@@ -11,10 +11,44 @@ import Link from "next/link";
 
 export default function ProductDetailPage() {
   const params = useParams();
-  const product = getProductBySlug(params.slug as string);
   const { addToCart } = useCart();
+  const [product, setProduct] = useState<ProductType | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<ProductType[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [showSizeError, setShowSizeError] = useState(false);
+
+  useEffect(() => {
+    const slug = params.slug as string;
+    fetch(`/api/products/${slug}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          setProduct(null);
+        } else {
+          setProduct(data);
+          // Fetch all products for related
+          fetch("/api/products")
+            .then((res) => res.json())
+            .then((allProducts: ProductType[]) => {
+              const related = allProducts
+                .filter((p) => p.category === data.category && p.id !== data.id)
+                .slice(0, 3);
+              setRelatedProducts(related);
+            });
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [params.slug]);
+
+  if (loading) {
+    return (
+      <div className="pt-32 pb-24 min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -34,10 +68,7 @@ export default function ProductDetailPage() {
     );
   }
 
-  const allImages = [
-    ...product.images.creative,
-    ...product.images.lifestyle,
-  ];
+  const allImages = product.images;
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -48,10 +79,7 @@ export default function ProductDetailPage() {
     addToCart(product, selectedSize);
   };
 
-  // Related products (same category, exclude current)
-  const related = products
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 3);
+  const related = relatedProducts;
 
   return (
     <div className="pt-20 md:pt-24 pb-24 bg-[#0a0a0a] min-h-screen">
@@ -118,15 +146,15 @@ export default function ProductDetailPage() {
               <span className="text-2xl font-bold text-white">
                 {formatPrice(product.price)}
               </span>
-              {product.originalPrice && (
+              {product.discountPrice && (
                 <>
                   <span className="text-lg text-neutral-600 line-through">
-                    {formatPrice(product.originalPrice)}
+                    {formatPrice(product.discountPrice)}
                   </span>
                   <span className="px-2 py-0.5 bg-amber-500/10 text-amber-500 text-xs font-medium rounded">
                     {Math.round(
-                      ((product.originalPrice - product.price) /
-                        product.originalPrice) *
+                      ((product.discountPrice - product.price) /
+                        product.discountPrice) *
                         100
                     )}
                     % OFF
@@ -137,7 +165,7 @@ export default function ProductDetailPage() {
 
             {/* Short Description */}
             <p className="mt-6 text-neutral-400 leading-relaxed">
-              {product.shortDescription}
+              {product.description}
             </p>
 
             {/* Divider */}
@@ -151,7 +179,7 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-3">
                 <div
                   className="w-8 h-8 rounded-full ring-2 ring-amber-500 ring-offset-2 ring-offset-[#0a0a0a]"
-                  style={{ backgroundColor: product.colorCode }}
+                  style={{ backgroundColor: product.colorCode || undefined }}
                 />
                 <span className="text-sm text-white">{product.color}</span>
               </div>
@@ -170,37 +198,52 @@ export default function ProductDetailPage() {
                 )}
               </div>
               <div className="flex flex-wrap gap-2">
-                {product.sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => {
-                      setSelectedSize(size);
-                      setShowSizeError(false);
-                    }}
-                    className={`w-12 h-12 rounded-lg text-sm font-medium transition-all duration-200 ${
-                      selectedSize === size
-                        ? "bg-amber-500 text-black"
-                        : "bg-white/5 text-white border border-white/10 hover:border-amber-500/50"
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
+                {product.sizes.map((size) => {
+                  const variant = product.variants?.find((v) => v.size === size);
+                  const sizeOutOfStock = variant ? variant.stock <= 0 : false;
+                  return (
+                    <button
+                      key={size}
+                      onClick={() => {
+                        if (sizeOutOfStock) return;
+                        setSelectedSize(size);
+                        setShowSizeError(false);
+                      }}
+                      disabled={sizeOutOfStock}
+                      className={`w-12 h-12 rounded-lg text-sm font-medium transition-all duration-200 relative ${
+                        sizeOutOfStock
+                          ? "bg-white/[0.02] text-neutral-700 border border-white/5 cursor-not-allowed line-through"
+                          : selectedSize === size
+                          ? "bg-amber-500 text-black"
+                          : "bg-white/5 text-white border border-white/10 hover:border-amber-500/50"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             {/* Add to Cart */}
             <button
               onClick={handleAddToCart}
-              className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-black font-semibold tracking-wider uppercase text-sm rounded-lg transition-all duration-300 hover:shadow-[0_0_30px_rgba(245,158,11,0.2)] active:scale-[0.98]"
+              disabled={product.isOutOfStock}
+              className={`w-full py-4 font-semibold tracking-wider uppercase text-sm rounded-lg transition-all duration-300 active:scale-[0.98] ${
+                product.isOutOfStock
+                  ? "bg-neutral-700 text-neutral-400 cursor-not-allowed"
+                  : "bg-amber-500 hover:bg-amber-400 text-black hover:shadow-[0_0_30px_rgba(245,158,11,0.2)]"
+              }`}
             >
-              Add to Cart
+              {product.isOutOfStock ? "Out of Stock" : "Add to Cart"}
             </button>
 
             {/* Stock */}
             <div className="mt-4 flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-green-500" />
-              <span className="text-xs text-neutral-400">In stock &amp; ready to ship</span>
+              <div className={`w-2 h-2 rounded-full ${product.isOutOfStock ? 'bg-red-500' : 'bg-green-500'}`} />
+              <span className="text-xs text-neutral-400">
+                {product.isOutOfStock ? 'Out of stock' : `In stock (${product.stock} available)`}
+              </span>
             </div>
 
             {/* Divider */}
@@ -266,8 +309,8 @@ export default function ProductDetailPage() {
                     />
                   </svg>
                 </summary>
-                <div className="pb-4 text-sm text-neutral-400 leading-relaxed">
-                  {product.longDescription}
+                  <div className="pb-4 text-sm text-neutral-400 leading-relaxed">
+                  {product.longDescription || product.description}
                 </div>
               </details>
 

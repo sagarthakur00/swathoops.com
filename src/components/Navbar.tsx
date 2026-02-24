@@ -4,14 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/CartContext";
+import { NAV_LINKS } from "@/config/client";
 import CartDrawer from "./CartDrawer";
-
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/shop", label: "Shop" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
-];
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,7 +26,7 @@ export default function Navbar() {
 
             {/* Desktop Nav */}
             <div className="hidden md:flex items-center gap-8">
-              {navLinks.map((link) => (
+              {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -120,7 +114,7 @@ export default function Navbar() {
               className="md:hidden overflow-hidden bg-[#0a0a0a] border-t border-white/5"
             >
               <div className="px-4 py-6 space-y-4">
-                {navLinks.map((link) => (
+                {NAV_LINKS.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}

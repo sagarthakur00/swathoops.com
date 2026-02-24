@@ -2,8 +2,9 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/CartContext";
-import { formatPrice } from "@/data/products";
+import { formatPrice } from "@/types/product";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function CartDrawer() {
   const {
@@ -91,7 +92,7 @@ export default function CartDrawer() {
                   >
                     <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-neutral-900">
                       <Image
-                        src={item.product.images.creative[0]}
+                        src={item.product.images[0]}
                         alt={item.product.name}
                         fill
                         className="object-cover"
@@ -176,7 +177,9 @@ export default function CartDrawer() {
                   </span>
                 </div>
                 <button className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-black font-semibold tracking-wider uppercase text-sm rounded-lg transition-colors">
-                  Checkout
+                  <Link href="/checkout" onClick={() => setIsCartOpen(false)} className="block w-full">
+                    Checkout
+                  </Link>
                 </button>
               </div>
             )}

@@ -3,27 +3,44 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { products } from "@/data/products";
+import { useEffect, useState } from "react";
+import { ProductType } from "@/types/product";
 
-const categories = [
-  {
-    name: "Loafers",
-    description: "Effortless elegance",
-    image: products.find((p) => p.category === "Loafers")!.images.creative[0],
-  },
-  {
-    name: "Formal",
-    description: "Refined sophistication",
-    image: products.find((p) => p.category === "Formal")!.images.creative[0],
-  },
-  {
-    name: "Casual",
-    description: "Everyday comfort",
-    image: products.find((p) => p.category === "Casual")!.images.creative[0],
-  },
-];
+interface CategoryInfo {
+  name: string;
+  description: string;
+  image: string;
+}
 
 export default function CategoryShowcase() {
+  const [categories, setCategories] = useState<CategoryInfo[]>([]);
+
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((products: ProductType[]) => {
+        const cats: CategoryInfo[] = [
+          {
+            name: "Loafers",
+            description: "Effortless elegance",
+            image: products.find((p) => p.category === "Loafers")?.images[0] || "",
+          },
+          {
+            name: "Formal",
+            description: "Refined sophistication",
+            image: products.find((p) => p.category === "Formal")?.images[0] || "",
+          },
+          {
+            name: "Casual",
+            description: "Everyday comfort",
+            image: products.find((p) => p.category === "Casual")?.images[0] || "",
+          },
+        ].filter((cat) => cat.image); // Filter out categories without images
+        setCategories(cats);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section className="py-24 bg-[#0a0a0a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,13 +77,15 @@ export default function CategoryShowcase() {
             >
               <Link href={`/shop?category=${cat.name}`}>
                 <div className="group relative h-80 rounded-2xl overflow-hidden cursor-pointer">
-                  <Image
-                    src={cat.image}
-                    alt={cat.name}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
+                  {cat.image && (
+                    <Image
+                      src={cat.image}
+                      alt={cat.name}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                   <div className="absolute bottom-6 left-6 right-6">
                     <p className="text-xs text-amber-500/80 tracking-widest uppercase mb-1">

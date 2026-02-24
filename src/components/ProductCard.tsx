@@ -3,11 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Product, formatPrice } from "@/data/products";
+import { ProductType, formatPrice } from "@/types/product";
 import { useState } from "react";
 
 interface ProductCardProps {
-  product: Product;
+  product: ProductType;
   index?: number;
 }
 
@@ -30,7 +30,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           {/* Image Container */}
           <div className="relative aspect-square overflow-hidden rounded-xl bg-neutral-900">
             <Image
-              src={product.images.creative[0]}
+              src={product.images[0]}
               alt={product.name}
               fill
               className={`object-cover transition-transform duration-700 ${
@@ -46,7 +46,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               }`}
             >
               <Image
-                src={product.images.creative[1]}
+                src={product.images[1] || product.images[0]}
                 alt={`${product.name} alternate`}
                 fill
                 className="object-cover"
@@ -62,7 +62,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             </div>
 
             {/* Sale Badge */}
-            {product.originalPrice && (
+            {product.discountPrice && (
               <div className="absolute top-3 right-3">
                 <span className="px-3 py-1 bg-amber-500 text-[10px] font-bold tracking-wider text-black rounded-full uppercase">
                   Sale
@@ -92,18 +92,21 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               </h3>
               <div
                 className="w-3 h-3 rounded-full border border-white/20"
-                style={{ backgroundColor: product.colorCode }}
+                style={{ backgroundColor: product.colorCode || undefined }}
               />
             </div>
-            <p className="text-xs text-neutral-500">{product.shortDescription}</p>
+            <p className="text-xs text-neutral-500">{product.description}</p>
             <div className="flex items-center gap-2 pt-1">
               <span className="text-sm font-semibold text-white">
                 {formatPrice(product.price)}
               </span>
-              {product.originalPrice && (
+              {product.discountPrice && (
                 <span className="text-xs text-neutral-600 line-through">
-                  {formatPrice(product.originalPrice)}
+                  {formatPrice(product.discountPrice)}
                 </span>
+              )}
+              {product.isOutOfStock && (
+                <span className="text-xs text-red-400 font-medium">Out of Stock</span>
               )}
             </div>
           </div>

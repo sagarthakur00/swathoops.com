@@ -1,20 +1,39 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { products, getAllCategories, getProductsByCategory } from "@/data/products";
+import { ProductType } from "@/types/product";
 import ProductCard from "@/components/ProductCard";
 
 export default function ShopPage() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "All";
   const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [products, setProducts] = useState<ProductType[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const categories = getAllCategories();
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const categories = useMemo(() => {
+    const cats = Array.from(new Set(products.map((p) => p.category).filter(Boolean))) as string[];
+    return ["All", ...cats];
+  }, [products]);
+
   const filteredProducts = useMemo(
-    () => getProductsByCategory(activeCategory),
-    [activeCategory]
+    () =>
+      activeCategory === "All"
+        ? products
+        : products.filter((p) => p.category === activeCategory),
+    [activeCategory, products]
   );
 
   return (

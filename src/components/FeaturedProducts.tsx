@@ -1,11 +1,25 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { products } from "@/data/products";
+import { useEffect, useState } from "react";
+import { ProductType } from "@/types/product";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
 
 export default function FeaturedProducts() {
+  const [products, setProducts] = useState<ProductType[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
   const featured = products.slice(0, 6);
 
   return (
@@ -43,11 +57,19 @@ export default function FeaturedProducts() {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {featured.map((product, i) => (
-            <ProductCard key={product.id} product={product} index={i} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="aspect-square bg-neutral-900 rounded-xl animate-pulse" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {featured.map((product, i) => (
+              <ProductCard key={product.id} product={product} index={i} />
+            ))}
+          </div>
+        )}
 
         {/* CTA */}
         <motion.div

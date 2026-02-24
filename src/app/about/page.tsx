@@ -1,9 +1,10 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { products } from "@/data/products";
+import { ProductType } from "@/types/product";
 
 const values = [
   {
@@ -29,6 +30,21 @@ const values = [
 ];
 
 export default function AboutPage() {
+  const [heroImage, setHeroImage] = useState<string>("/images/lifestyle/lifestyle_1.jpg");
+
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data: ProductType[]) => {
+        if (data.length > 6 && data[6].images.length > 0) {
+          setHeroImage(data[6].images[data[6].images.length - 1]);
+        } else if (data.length > 0 && data[0].images.length > 0) {
+          setHeroImage(data[0].images[data[0].images.length - 1]);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <div className="pt-20 md:pt-24 pb-24 bg-[#0a0a0a] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -73,7 +89,7 @@ export default function AboutPage() {
           className="relative h-80 md:h-[500px] rounded-2xl overflow-hidden mb-24"
         >
           <Image
-            src={products[6].images.lifestyle[0]}
+            src={heroImage}
             alt="SWATHOOPS Craftsmanship"
             fill
             className="object-cover"
