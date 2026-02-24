@@ -18,9 +18,6 @@ const nextConfig: NextConfig = {
   // Strict mode for catching bugs early
   reactStrictMode: true,
 
-  // Externalize heavy packages from serverless function bundles
-  serverExternalPackages: ["@prisma/client", "prisma", "bcryptjs"],
-
   // Exclude unnecessary files from serverless function file tracing
   outputFileTracingExcludes: {
     "/*": [
