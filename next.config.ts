@@ -21,6 +21,18 @@ const nextConfig: NextConfig = {
   // Externalize heavy packages from serverless function bundles
   serverExternalPackages: ["@prisma/client", "prisma", "bcryptjs"],
 
+  // Exclude unnecessary files from serverless function file tracing
+  outputFileTracingExcludes: {
+    "/*": [
+      "./public/**",
+      "./prisma/**",
+      "./scripts/**",
+      "./.git/**",
+      "./docker-compose.yml",
+      "./Dockerfile",
+    ],
+  },
+
   // Output standalone only for Docker/self-hosted (not Vercel)
   ...(process.env.DOCKER_BUILD === "true" ? { output: "standalone" as const } : {}),
 };
