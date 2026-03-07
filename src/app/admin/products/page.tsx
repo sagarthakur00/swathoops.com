@@ -34,7 +34,7 @@ export default function AdminProductsPage() {
     fetch(`/api/products?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data);
+        setProducts(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));

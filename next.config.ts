@@ -18,8 +18,8 @@ const nextConfig: NextConfig = {
   // Strict mode for catching bugs early
   reactStrictMode: true,
 
-  // Force-bundle all server packages (prevent Turbopack from externalizing Prisma)
-  serverExternalPackages: [],
+  // Tell Next.js to keep Prisma as an external (not bundled) so its binary engine works on Vercel
+  serverExternalPackages: ["@prisma/client", "prisma"],
 
   // Exclude unnecessary files from serverless function file tracing
   outputFileTracingExcludes: {
