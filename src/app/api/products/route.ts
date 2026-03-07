@@ -49,9 +49,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(products);
   } catch (error) {
-    console.error("Failed to fetch products:", error);
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("Failed to fetch products:", message);
     return NextResponse.json(
-      { error: "Failed to fetch products" },
+      { error: "Failed to fetch products", detail: message },
       { status: 500 }
     );
   }
