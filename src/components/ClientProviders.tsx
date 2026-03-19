@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { CartProvider } from "@/context/CartContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function ClientProviders({
   children,
@@ -18,6 +19,7 @@ export default function ClientProviders({
       {!isAdmin && <Navbar />}
       <main>{children}</main>
       {!isAdmin && <Footer />}
+      {!isAdmin && <WhatsAppButton />}
     </CartProvider>
   );
 }
