@@ -16,7 +16,7 @@ export const CONTACT_CONFIG = {
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "support@swathoops.com",
   phone: process.env.NEXT_PUBLIC_CONTACT_PHONE || "+91 8287524434",
   address:
-    process.env.NEXT_PUBLIC_CONTACT_ADDRESS || "Mumbai, Maharashtra, India",
+    process.env.NEXT_PUBLIC_CONTACT_ADDRESS || "Noida, Uttar Pradesh, India",
 } as const;
 
 export const PAYMENT_CONFIG = {
