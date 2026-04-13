@@ -17,6 +17,12 @@ export const CONTACT_CONFIG = {
   phone: process.env.NEXT_PUBLIC_CONTACT_PHONE || "+91 8287524434",
   address:
     process.env.NEXT_PUBLIC_CONTACT_ADDRESS || "Noida, Uttar Pradesh, India",
+  social: {
+    x: process.env.NEXT_PUBLIC_CONTACT_X || "https://x.com/Swathoops1",
+    instagram:
+      process.env.NEXT_PUBLIC_CONTACT_INSTAGRAM ||
+      "https://www.instagram.com/swathoopsofficial/",
+  },
 } as const;
 
 export const PAYMENT_CONFIG = {

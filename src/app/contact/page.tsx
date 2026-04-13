@@ -72,6 +72,7 @@ export default function ContactPage() {
                   ),
                   label: "Email",
                   value: CONTACT_CONFIG.email,
+                  href: null,
                 },
                 {
                   icon: (
@@ -81,6 +82,7 @@ export default function ContactPage() {
                   ),
                   label: "Phone",
                   value: CONTACT_CONFIG.phone,
+                  href: null,
                 },
                 {
                   icon: (
@@ -91,6 +93,41 @@ export default function ContactPage() {
                   ),
                   label: "Address",
                   value: CONTACT_CONFIG.address,
+                  href: null,
+                },
+                {
+                  icon: (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <path d="M18.244 2H21.62l-7.374 8.43L22.92 22h-6.79l-5.316-6.948L4.73 22H1.35l7.889-9.015L.92 2h6.963l4.803 6.276L18.244 2Zm-1.184 17.978h1.87L6.867 3.916H4.86L17.06 19.978Z" />
+                    </svg>
+                  ),
+                  label: "X",
+                  value: "x.com/Swathoops1",
+                  href: CONTACT_CONFIG.social.x,
+                },
+                {
+                  icon: (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.7}
+                      stroke="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <rect x="3" y="3" width="18" height="18" rx="5" />
+                      <circle cx="12" cy="12" r="4" />
+                      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                    </svg>
+                  ),
+                  label: "Instagram",
+                  value: "instagram.com/swathoopsofficial",
+                  href: CONTACT_CONFIG.social.instagram,
                 },
               ].map((item) => (
                 <div key={item.label} className="flex items-start gap-4">
@@ -101,7 +138,18 @@ export default function ContactPage() {
                     <p className="text-xs text-neutral-500 tracking-widest uppercase mb-1">
                       {item.label}
                     </p>
-                    <p className="text-sm text-white">{item.value}</p>
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-white hover:text-amber-400 transition-colors"
+                      >
+                        {item.value}
+                      </a>
+                    ) : (
+                      <p className="text-sm text-white">{item.value}</p>
+                    )}
                   </div>
                 </div>
               ))}
